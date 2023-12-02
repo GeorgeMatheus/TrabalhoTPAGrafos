@@ -4,7 +4,7 @@ public class Aresta<T> {
     private float peso;
     private Vertice<T> destino;
 
-    public Aresta(float peso, Vertice<T> destino){
+    public Aresta(Vertice<T> destino, float peso){
         this.peso = peso;
         this.destino = destino;
     }
@@ -41,6 +41,6 @@ public class Aresta<T> {
 
     @Override
     public Aresta<T> clone(){
-        return new Aresta<T>(this.peso, this.destino);
+        return new Aresta<T>(this.destino, this.peso);
     }
 }

@@ -1,9 +1,8 @@
 package lib;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Grafo<T> {
-    private ArrayList<Aresta> arestas;
+    private ArrayList<Aresta<T>> arestas;
     private ArrayList<Vertice<T>> vertices;
 
 
@@ -13,8 +12,8 @@ public class Grafo<T> {
         return novo;
     }
 
-    private Vertice obterVertice(T valor){
-        Vertice v;
+    private Vertice<T> obterVertice(T valor){
+        Vertice<T> v;
 
 
         for(int i=0; i<this.vertices.size();i++){
@@ -29,8 +28,8 @@ public class Grafo<T> {
     }
 
     public void adicionarAresta(T origem, T destino, float peso){
-        Vertice verticeOrigem, verticeDestino;
-        Aresta novaAresta;
+        Vertice<T> verticeOrigem, verticeDestino;
+        Aresta<T> novaAresta;
 
 
         verticeOrigem = obterVertice(origem);
@@ -45,8 +44,32 @@ public class Grafo<T> {
             verticeDestino = adicionarVertice(destino);
         }
 
-        novaAresta = new Aresta(verticeOrigem, verticeDestino, peso);
-        this.arestas.add(novaAresta);
+        verticeOrigem.adicionarDestino(new Aresta<T>(verticeDestino, peso));
+    }
+
+    public void buscaEmLargura(){
+        ArrayList<Vertice<T>> marcados = new ArrayList<Vertice<T>>();
+        ArrayList<Vertice<T>> fila = new ArrayList<Vertice<T>>();
+
+        Vertice<T> atual = this.vertices.get(0);
+        fila.add(atual);
+
+        while (fila.size() > 0){
+            atual = fila.get(0);
+            fila.remove(0);
+            marcados.add(atual);
+
+            ArrayList<Aresta<T>> destinos = atual.getDestinos();
+
+            Vertice<T> proximo;
+            for (int i = 0; i < destinos.size(); i++){
+                proximo = destinos.get(i).getDestino();
+
+                if(!marcados.contains(proximo)&&!fila.contains(proximo)){
+                    fila.add(proximo);
+                }
+            }
+        }
 
     }
 

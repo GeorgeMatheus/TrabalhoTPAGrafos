@@ -30,7 +30,7 @@ public class Grafo<T> {
 
     public void adicionarAresta(T origem, T destino, float peso){
         Vertice verticeOrigem, verticeDestino;
-
+        Aresta novaAresta;
 
 
         verticeOrigem = obterVertice(origem);
@@ -45,8 +45,8 @@ public class Grafo<T> {
             verticeDestino = adicionarVertice(destino);
         }
 
-        verticeOrigem.adicionarDestino(new Aresta(verticeDestino, peso));
-
+        novaAresta = new Aresta(verticeOrigem, verticeDestino, peso);
+        this.arestas.add(novaAresta);
 
     }
 

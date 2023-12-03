@@ -6,8 +6,8 @@ public class Vertice<T> {
     private ArrayList<Aresta<T>> destinos;
 
     public Vertice(T valor){
-        this.valor = valor;
-        this.destinos =  new ArrayList<Aresta<T>>();
+        setValor(valor);
+        this.destinos = new ArrayList<>();
     }
 
     public T getValor(){
@@ -24,15 +24,6 @@ public class Vertice<T> {
 
     public ArrayList<Aresta<T>> getDestinos(){
         return destinos;
-    }
-
-    @Override
-    protected Vertice<T> clone() {
-        Vertice<T> v = new Vertice<T>(this.valor);
-        for(Aresta<T> a : this.destinos){
-            v.destinos.add(a.clone());
-        }
-        return v;
     }
 
     @Override

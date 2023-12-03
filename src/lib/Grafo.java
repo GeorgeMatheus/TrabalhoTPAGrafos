@@ -1,10 +1,14 @@
 package lib;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Grafo<T> {
-    private ArrayList<Aresta<T>> arestas;
     private ArrayList<Vertice<T>> vertices;
 
+
+    public Grafo() {
+        this.vertices = new ArrayList<>();
+    }
 
     public Vertice<T> adicionarVertice(T valor){
         Vertice<T> novo = new Vertice<T>(valor);
@@ -13,24 +17,19 @@ public class Grafo<T> {
     }
 
     private Vertice<T> obterVertice(T valor){
-        Vertice<T> v;
 
-
-        for(int i=0; i<this.vertices.size();i++){
-            v = this.vertices.get(i);
-
-            if(v.getValor().equals(valor)){
+        for(Vertice<T> v : this.vertices) {
+            if(v.getValor().equals(valor)) {
                 return v;
             }
         }
 
-        return null;
+        return  null;
     }
+
 
     public void adicionarAresta(T origem, T destino, float peso){
         Vertice<T> verticeOrigem, verticeDestino;
-        Aresta<T> novaAresta;
-
 
         verticeOrigem = obterVertice(origem);
 
@@ -54,25 +53,88 @@ public class Grafo<T> {
         Vertice<T> atual = this.vertices.get(0);
         fila.add(atual);
 
-        while (fila.size() > 0){
+        while (!fila.isEmpty()){
             atual = fila.get(0);
             fila.remove(0);
             marcados.add(atual);
 
-            ArrayList<Aresta<T>> destinos = atual.getDestinos();
 
-            Vertice<T> proximo;
-            for (int i = 0; i < destinos.size(); i++){
-                proximo = destinos.get(i).getDestino();
+            for (Aresta<T> destino : atual.getDestinos()) {
+                Vertice<T> proximo = destino.getDestino();
 
-                if(!marcados.contains(proximo)&&!fila.contains(proximo)){
-                    fila.add(proximo);
+                if (!marcados.contains(proximo) && !fila.contains(proximo)) {
+                  fila.add(proximo);
                 }
             }
         }
 
     }
 
+    public boolean temCiclo() {
+        ArrayList<Vertice<T>> visitados = new ArrayList<>();
+        ArrayList<Vertice<T>> pilhaRecursao = new ArrayList<>();
 
+        for (Vertice<T> vertice : vertices) {
+            if (!visitados.contains(vertice) && temCicloUtil(vertice, visitados, pilhaRecursao)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean temCicloUtil(Vertice<T> vertice, ArrayList<Vertice<T>> visitados, ArrayList<Vertice<T>> pilhaRecursao) {
+        visitados.add(vertice);
+        pilhaRecursao.add(vertice);
+
+        for (Aresta<T> aresta : vertice.getDestinos()) {
+            Vertice<T> destino = aresta.getDestino();
+
+            if (!visitados.contains(destino)) {
+                if (temCicloUtil(destino, visitados, pilhaRecursao)) {
+                    return true;
+                }
+            } else if (pilhaRecursao.contains(destino)) {
+                return true;
+            }
+        }
+
+        pilhaRecursao.remove(vertice);
+        return false;
+    }
+
+    public ArrayList<Vertice<T>> ordenacaoTopologica() {
+        ArrayList<Vertice<T>> resultado = new ArrayList<>();
+        Stack<Vertice<T>> pilha = new Stack<>();
+        ArrayList<Vertice<T>> visitados = new ArrayList<>();
+
+        for (Vertice<T> vertice : vertices) {
+            if (!visitados.contains(vertice)) {
+                ordenacaoTopologicaUtil(vertice, visitados, pilha);
+            }
+        }
+
+
+        // A pilha agora contém a ordenação topológica inversa
+        while (!pilha.isEmpty()) {
+            resultado.add(pilha.pop());
+        }
+
+        return resultado;
+    }
+
+    private void ordenacaoTopologicaUtil(Vertice<T> vertice, ArrayList<Vertice<T>> visitados, Stack<Vertice<T>> pilha) {
+        visitados.add(vertice);
+
+        for (Aresta<T> aresta : vertice.getDestinos()) {
+            Vertice<T> destino = aresta.getDestino();
+
+            if (!visitados.contains(destino)) {
+                ordenacaoTopologicaUtil(destino, visitados, pilha);
+            }
+        }
+
+        pilha.push(vertice);
+    }
 
 }

@@ -5,8 +5,8 @@ public class Aresta<T> {
     private Vertice<T> destino;
 
     public Aresta(Vertice<T> destino, float peso){
-        this.peso = peso;
-        this.destino = destino;
+        setPeso(peso);
+        setDestino(destino);
     }
 
     public float getPeso(){
@@ -25,22 +25,10 @@ public class Aresta<T> {
         this.destino = destino;
     }
 
-    public boolean temVerticeDeDestinoIgualA(Vertice<T> vertice){
-        return this.destino.getValor().equals(vertice.getValor());
-    }
-
-    public boolean temVerticeDeDestinoDiferenteDe(Vertice<T> vertice){
-        return !this.destino.getValor().equals(vertice.getValor());
-    }
 
     @Override
     public String toString() {
         // TODO Auto-generated method stub
         return destino.getValor() + "; peso: " + this.peso;
-    }
-
-    @Override
-    public Aresta<T> clone(){
-        return new Aresta<T>(this.destino, this.peso);
     }
 }

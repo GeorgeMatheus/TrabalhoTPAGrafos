@@ -6,7 +6,7 @@ A biblioteca de grafos a ser desenvolvida deve ser capaz de representar e manipu
 
 Cada vértice do grafo deve armazenar um valor de tipo genérico. 
 
-###Funcionalidades 
+## Funcionalidades 
 
 **A classe grafo deve prover métodos que permitam:**
 

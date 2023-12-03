@@ -2,74 +2,73 @@ package lib;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class Grafo<T> {
+public class Grafo<T> implements IGrafo<T> {
     private ArrayList<Vertice<T>> vertices;
-
 
     public Grafo() {
         this.vertices = new ArrayList<>();
     }
 
-    public Vertice<T> adicionarVertice(T valor){
-        Vertice<T> novo = new Vertice<T>(valor);
+    // Adiciona um vértice ao grafo com o valor fornecido.
+    public Vertice<T> adicionarVertice(T valor) {
+        Vertice<T> novo = new Vertice<>(valor);
         this.vertices.add(novo);
         return novo;
     }
 
-    private Vertice<T> obterVertice(T valor){
-
-        for(Vertice<T> v : this.vertices) {
-            if(v.getValor().equals(valor)) {
+    // Obtém um vértice do grafo pelo valor.
+    private Vertice<T> obterVertice(T valor) {
+        for (Vertice<T> v : this.vertices) {
+            if (v.getValor().equals(valor)) {
                 return v;
             }
         }
-
-        return  null;
+        return null;
     }
 
+    // Adiciona uma aresta entre os vértices de origem e destino, com o peso fornecido.
+    // Cria os vértices se não existirem.
+    public void adicionarAresta(T origem, T destino, float peso) {
+        Vertice<T> verticeOrigem = obterVertice(origem);
 
-    public void adicionarAresta(T origem, T destino, float peso){
-        Vertice<T> verticeOrigem, verticeDestino;
-
-        verticeOrigem = obterVertice(origem);
-
-        if(verticeOrigem == null){
+        if (verticeOrigem == null) {
             verticeOrigem = adicionarVertice(origem);
         }
 
-        verticeDestino = obterVertice(destino);
+        Vertice<T> verticeDestino = obterVertice(destino);
 
-        if(verticeDestino == null){
+        if (verticeDestino == null) {
             verticeDestino = adicionarVertice(destino);
         }
 
-        verticeOrigem.adicionarDestino(new Aresta<T>(verticeDestino, peso));
+        verticeOrigem.adicionarDestino(new Aresta<>(verticeDestino, peso));
     }
 
-    public void buscaEmLargura(){
-        ArrayList<Vertice<T>> marcados = new ArrayList<Vertice<T>>();
-        ArrayList<Vertice<T>> fila = new ArrayList<Vertice<T>>();
+    // Realiza uma busca em largura no grafo a partir do primeiro vértice adicionado.
+    public void buscaEmLargura() {
+        ArrayList<Vertice<T>> marcados = new ArrayList<>();
+        ArrayList<Vertice<T>> fila = new ArrayList<>();
 
         Vertice<T> atual = this.vertices.get(0);
         fila.add(atual);
 
-        while (!fila.isEmpty()){
+        while (!fila.isEmpty()) {
             atual = fila.get(0);
             fila.remove(0);
             marcados.add(atual);
 
-
+            // Itera sobre os destinos do vértice atual
             for (Aresta<T> destino : atual.getDestinos()) {
                 Vertice<T> proximo = destino.getDestino();
 
                 if (!marcados.contains(proximo) && !fila.contains(proximo)) {
-                  fila.add(proximo);
+                    fila.add(proximo);
                 }
             }
         }
-
     }
 
+    // Verifica se o grafo possui ciclos.
     public boolean temCiclo() {
         ArrayList<Vertice<T>> visitados = new ArrayList<>();
         ArrayList<Vertice<T>> pilhaRecursao = new ArrayList<>();
@@ -83,6 +82,7 @@ public class Grafo<T> {
         return false;
     }
 
+    // Função auxiliar para verificar ciclos durante a busca em profundidade (DFS).
     private boolean temCicloUtil(Vertice<T> vertice, ArrayList<Vertice<T>> visitados, ArrayList<Vertice<T>> pilhaRecursao) {
         visitados.add(vertice);
         pilhaRecursao.add(vertice);
@@ -103,6 +103,7 @@ public class Grafo<T> {
         return false;
     }
 
+    // Executa uma ordenação topológica do grafo.
     public ArrayList<Vertice<T>> ordenacaoTopologica() {
         ArrayList<Vertice<T>> resultado = new ArrayList<>();
         Stack<Vertice<T>> pilha = new Stack<>();
@@ -114,7 +115,6 @@ public class Grafo<T> {
             }
         }
 
-
         // A pilha agora contém a ordenação topológica inversa
         while (!pilha.isEmpty()) {
             resultado.add(pilha.pop());
@@ -123,6 +123,7 @@ public class Grafo<T> {
         return resultado;
     }
 
+    // Função auxiliar para a ordenação topológica durante a busca em profundidade (DFS).
     private void ordenacaoTopologicaUtil(Vertice<T> vertice, ArrayList<Vertice<T>> visitados, Stack<Vertice<T>> pilha) {
         visitados.add(vertice);
 
@@ -136,5 +137,4 @@ public class Grafo<T> {
 
         pilha.push(vertice);
     }
-
 }

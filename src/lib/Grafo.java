@@ -49,14 +49,23 @@ public class Grafo<T> implements IGrafo<T> {
         ArrayList<Vertice<T>> marcados = new ArrayList<>();
         ArrayList<Vertice<T>> fila = new ArrayList<>();
 
+        //Pega o primeiro vértice como ponto de partida e o coloca na fila
+        //Poderia escolher qualquer outro
+        //Mas note que dependendo do grafo pode ser que vc não caminhe por todos os vertices
         Vertice<T> atual = this.vertices.get(0);
         fila.add(atual);
+        System.out.println("Busca em largura a partir do vértice: " + atual.getValor());
 
+        //Enquanto houver vertice na fila ...
         while (!fila.isEmpty()) {
+            //Pego o proximo da fila, marco como visitado e o imprimo
             atual = fila.get(0);
             fila.remove(0);
             marcados.add(atual);
+            System.out.println(atual.getValor());
 
+            //Depois pego a lista de adjacencia do no e se o no adjacente ainda não tiver sido visitado, o coloco na
+            // fila
             // Itera sobre os destinos do vértice atual
             for (Aresta<T> destino : atual.getDestinos()) {
                 Vertice<T> proximo = destino.getDestino();
